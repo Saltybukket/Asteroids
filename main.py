@@ -1,9 +1,8 @@
-#constants must be in first line for pygame to access
 #imports all as is -> with "import constants" -> would need constants.<CONSTANT> to access
 from constants import * 
 from player import *  
 from asteroidfield import *  
-
+import sys
 import pygame
 
 
@@ -40,6 +39,12 @@ def main():
             
         updatable.update(dt)      #updates all group elements
         screen.fill("black")
+        
+        for asteroid in asteroids:
+            if player_ship.check_collision(asteroid):
+                print("Game over!")
+                sys.exit()
+        
         
         for drawable_obj in drawable:
             drawable_obj.draw(screen)         #draws all group elements
