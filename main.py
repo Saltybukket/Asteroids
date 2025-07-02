@@ -1,6 +1,9 @@
 #constants must be in first line for pygame to access
 #imports all as is -> with "import constants" -> would need constants.<CONSTANT> to access
-from constants import *     
+from constants import * 
+from player import *  
+from asteroidfield import *  
+
 import pygame
 
 
@@ -15,15 +18,36 @@ def main():
     
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))     #Display dimensions as touple
     
+    
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    
+    
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = updatable
+    
+    asteroid_field = AsteroidField()
+    player_ship = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+    #==== Game Loop ====
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                print("> Game has been closed")
                 return
-    
+            
+        updatable.update(dt)      #updates all group elements
         screen.fill("black")
-        pygame.display.flip()       #need pygame.display.flip() instead of screen.flip() -> not a surface method
         
+        for drawable_obj in drawable:
+            drawable_obj.draw(screen)         #draws all group elements
+        
+        pygame.display.flip()       #need pygame.display.flip() instead of screen.flip() -> not a surface method
+
         dt = game_clock.tick(60) / 1000         #wait 1/60 sec  | retuns time since last call (delta_time)
+
     
 if __name__ == "__main__":
     main()
